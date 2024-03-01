@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Statistics</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-bg.png'); /* Replace 'background.jpg' with your image URL */
+            background-size: cover;
+            background-position: unset;
+            font-family: Arial, sans-serif;
+            height:100vh;
+        }
+
+        header {
+            text-align: right;
+            padding: 10px;
+            display: flex;
+            justify-content: end;
+            align-items: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 50px 40px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-collapse: collapse;
+        }
+
+       
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-right: 0;
+            border-left: 0;
+        }
+
+        th {
+            background-color: #eee;
+            color: black;
+        }
+
+        img {
+            /* max-width: 100px; */
+            /* max-height: 100px; */
+            display: block;
+            margin: 10px 50px;
+        }
+
+          /* Modal styles */
+          .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 80%;
+            max-height: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-logo.JPG" alt="Logo"> <!-- Replace 'logo.png' with your logo image URL -->
+    </header>
+
+    <div class="heading" style="margin-left:20px;">
+        <h1>ICC CRICKET WORLD CUP 2011</h1>
+        <h3>India vs Sri Lanka Scorecard</h3>
+      </div>
+
+    <table id="playerTable">
+        <thead style="background-color: red;color: white;font-weight: 800;">
+            <tr>
+               <td colspan="4">India Innings</td>
+               <td colspan="2">277 - 4 (48.2)</td> 
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                <th>Batsman</th>
+                <th>R</th>
+                <th>B</th>
+                <th>4s</th>
+                <th>6s</th>
+                <th>SR</th>
+            </tr>
+        </thead>
+        <tbody>
+           
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4">Extras</td>
+                <td colspan="2">15 (b1, lb 6,w 8, nb 0, p 0)</td> 
+             </tr>
+             <tr>
+                <td colspan="4">Total</td>
+                <td colspan="2">277 (4 wkts, 48.2 Ov)</td> 
+             </tr>
+             <tr>
+                <td colspan="4">Did not bat</td>
+                <td colspan="2" id="didnotbat"></td> 
+             </tr>
+        </tfoot>
+    </table>
+
+    <div class="modal" id="playerModal">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <script>
+        const players = [
+      {
+        player_name:"Virendra Sehwag",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-sehwag.png",
+        player_runs:0,
+        player_balls:2,
+        player_wicket:"lbw b L Malinga",
+        player_strike:0.00,
+        player_fours:0,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"Sachin Tendulkar",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-sachin.png",
+        player_runs:18,
+        player_balls:14,
+        player_wicket:"c K Sangakara b L Malinga",
+        player_strike:128.57,
+        player_fours:2,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"Gautam Gambhir",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-gambhir.png",
+        player_runs:97,
+        player_balls:122,
+        player_wicket:"b T Parera",
+        player_strike:79.51,
+        player_fours:9,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"Virat Kohli",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-virat-kohli.png",
+        player_runs:35,
+        player_balls:49,
+        player_wicket:"c & b T Dilsan",
+        player_strike:71.43,
+        player_fours:4,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"MS Dhoni (c & wk)",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-dhoni.png",
+        player_runs:91,
+        player_balls:79,
+        player_wicket:"not out",
+        player_strike:115.19,
+        player_fours:8,
+        player_sixes:2,
+
+      },
+      {
+        player_name:"Yuvraj Singh",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-yuvraj.png",
+        player_runs:21,
+        player_balls:24,
+        player_wicket:"not out",
+        player_strike:87.50,
+        player_fours:2,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"Suresh Raina",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-suresh-raina.jpg",
+        player_runs:21,
+        player_balls:24,
+        player_wicket:"not out",
+        player_strike:87.50,
+        player_fours:2,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"Harbhajan Singh",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-harbhajan.jpg",
+        player_runs:0,
+        player_balls:0,
+        player_wicket:"not played",
+        player_strike:0,
+        player_fours:0,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"Zaheer Khan",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-zaheer-khan.jpg",
+        player_runs:0,
+        player_balls:0,
+        player_wicket:"not played",
+        player_strike:0,
+        player_fours:0,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"Munaf Patel",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-munaf-patel.jpg",
+        player_runs:0,
+        player_balls:0,
+        player_wicket:"not played",
+        player_strike:0,
+        player_fours:0,
+        player_sixes:0,
+
+      },
+      {
+        player_name:"S Sreesanth",
+        player_image:"https://s3.ap-south-1.amazonaws.com/kalvi-education.github.io/front-end-web-development/cricpro-sreeshanth.jpg",
+        player_runs:0,
+        player_balls:0,
+        player_wicket:"not played",
+        player_strike:0,
+        player_fours:0,
+        player_sixes:0,
+
+      },
+];
+
+        const tableBody = document.querySelector("#playerTable tbody");
+        const tableFoot = document.querySelector("#playerTable #didnotbat");
+        const modal = document.getElementById("playerModal");
+        const modalContent = document.getElementById("modalContent");
+
+        var notplayed = '';
+
+
+        players.forEach(player => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td><a href="#" class="player-link">${player.player_name}</a></td>
+                <td>${player.player_runs}</td>
+                <td>${player.player_balls}</td>
+                <td>${player.player_fours}</td>
+                <td>${player.player_sixes}</td>
+                <td>${player.player_strike}</td>
+            `;
+
+
+            const anchor = row.querySelector(".player-link");
+            anchor.addEventListener("click", () => showModal(player.player_name, player.player_image));
+
+            if (player.player_wicket !== "not played") {
+                tableBody.appendChild(row);
+            } else {
+                tableFoot.appendChild(anchor);
+                // notplayed+=`<a href="#" class="player-link" style="margin-right:3px;text-decoration:none;">${player.player_name}</a>,`;
+            }
+
+        });
+
+        // tableFoot.innerHTML = notplayed;
+
+
+        function showModal(playerName, playerImage) {
+            modalContent.innerHTML = `
+                <h2>${playerName}</h2>
+                <img src="${playerImage}" alt="${playerName} Image">
+            `;
+            modal.style.display = "flex";
+        }
+
+        modal.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+    </script>
+
+</body>
+
+
+
+</html>
